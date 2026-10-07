@@ -24,8 +24,27 @@ import { ToastService } from '../core/toast.service';
             <input name="email" type="email" [(ngModel)]="email" placeholder="toi@exemple.com" required autocomplete="email">
           </label>
           <label>Mot de passe
-            <input name="password" type="password" [(ngModel)]="password" placeholder="8 caractères minimum" required minlength="8"
-              [attr.autocomplete]="mode() === 'login' ? 'current-password' : 'new-password'">
+            <div class="pw">
+              <input name="password" [type]="showPassword() ? 'text' : 'password'" [(ngModel)]="password"
+                placeholder="8 caractères minimum" required minlength="8"
+                [attr.autocomplete]="mode() === 'login' ? 'current-password' : 'new-password'">
+              <button type="button" class="eye" (click)="showPassword.set(!showPassword())"
+                [attr.aria-label]="showPassword() ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+                [attr.aria-pressed]="showPassword()">
+                @if (showPassword()) {
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17.94 17.94A10.9 10.9 0 0 1 12 19c-6.5 0-10-7-10-7a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A10.9 10.9 0 0 1 12 5c6.5 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19"/>
+                    <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
+                    <path d="M1 1l22 22"/>
+                  </svg>
+                } @else {
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                }
+              </button>
+            </div>
           </label>
           @if (mode() === 'register') {
             <label>Pays
@@ -63,6 +82,7 @@ export class AuthComponent {
   password = signal('');
   country = signal('');
   loading = signal(false);
+  showPassword = signal(false);
 
   submit() {
     if (!this.email() || !this.password()) return;

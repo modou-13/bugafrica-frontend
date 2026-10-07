@@ -22,8 +22,21 @@ import { TimeAgoPipe } from '../shared/time-ago.pipe';
             <span class="badge" [class.ok]="b.solved">{{ b.solved ? '✓ Résolu' : 'Ouvert' }}</span>
             @if (canManage()) {
               <span class="spacer"></span>
-              <a class="btn btn-ghost btn-sm" [routerLink]="['/bugs', b.id, 'edit']">Modifier</a>
-              <button class="btn btn-danger btn-sm" (click)="remove(b)">Supprimer</button>
+              <div class="icon-actions">
+                <a class="icon-btn" [routerLink]="['/bugs', b.id, 'edit']" title="Modifier" aria-label="Modifier ce bug">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                  </svg>
+                </a>
+                <button type="button" class="icon-btn danger" (click)="remove(b)" title="Supprimer" aria-label="Supprimer ce bug">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="3 6 5 6 21 6"/>
+                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                    <path d="M10 11v6"/><path d="M14 11v6"/>
+                    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                  </svg>
+                </button>
+              </div>
             }
           </div>
           <h1>{{ b.title }}</h1>

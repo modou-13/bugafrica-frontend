@@ -1,6 +1,7 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { ApiService } from '../core/api.service';
 import { Bug } from '../core/models';
 import { ToastService } from '../core/toast.service';
@@ -84,6 +85,15 @@ export class HomeComponent implements OnInit {
   tag = signal('');
   solved = signal<boolean | null>(null);
   private timer: any;
+  private request?: Subscription;
+
+  constructor() {
+    // Nettoyage quand on quitte la page : plus de minuteur ni de requête en cours
+    inject(DestroyRef).onDestroy(() => {
+      clearTimeout(this.timer);
+      this.request?.unsubscribe();
+    });
+  }
 
   ngOnInit() {
     this.api.tags().subscribe({ next: t => this.tags.set(t) });
@@ -91,8 +101,10 @@ export class HomeComponent implements OnInit {
   }
 
   load() {
+    // Annule la requête précédente : évite qu'une vieille réponse écrase la plus récente
+    this.request?.unsubscribe();
     this.loading.set(true);
-    this.api.searchBugs({ q: this.q(), tag: this.tag(), solved: this.solved(), page: this.page() }).subscribe({
+    this.request = this.api.searchBugs({ q: this.q(), tag: this.tag(), solved: this.solved(), page: this.page() }).subscribe({
       next: r => {
         this.bugs.set(r.content);
         this.total.set(r.page.totalElements);
